@@ -22,7 +22,8 @@ $(document).ready(function () {
     var currentTime = "";
     var diffTime = "";
     var remainder = "";
-    var nextArrivalTime = "";
+    var nextTrain = "";
+    var nextArrival = "";
     var minutesAway = "";
 
     // capture button on click
@@ -49,16 +50,22 @@ $(document).ready(function () {
         minutesAway = frequency - remainder;
         console.log("Minutes till Train: " + minutesAway);
 
-        nextArrival = moment().add(minutesAway, "minutes");
-        console.log("Arrival Time: " + moment(nextArrival).format("hh:mm"));
+        nextTrain = moment().add(minutesAway, "minutes");
+        console.log("nextTrain: " + nextTrain);
+
+        console.log("Arrival Time: " + moment(nextTrain).format("hh:mm"));
+
+        nextArrival = moment(nextTrain).format("hh:mm");
+
 
         database.ref().set({
             trainName: trainName,
             destination: destination,
             firstTime: firstTime,
+            remainder: remainder,
             frequency: frequency,
             minutesAway: minutesAway,
-            // nextArrival: nextArrival
+            nextArrival: nextArrival
 
 
         });
