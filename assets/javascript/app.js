@@ -14,51 +14,50 @@ $(document).ready(function () {
     var database = firebase.database();
 
     // initial values
-    var trainName = "";
-    var destination = "";
-    var firstTime = "";
-    var firstTimeConverted = "";
-    var frequency = "";
-    var currentTime = "";
-    var diffTime = "";
-    var remainder = "";
-    var nextTrain = "";
-    var nextArrival = "";
-    var minutesAway = "";
+    // var trainName = "";
+    // var destination = "";
+    // var firstTime = "";
+    // var firstTimeConverted = "";
+    // var frequency = "";
+    // var currentTime = "";
+    // var diffTime = "";
+    // var remainder = "";
+    // var nextTrain = "";
+    // var nextArrival = "";
+    // var minutesAway = "";
 
     // capture button on click
     $("#add-train-btn").on("click", function () {
         event.preventDefault();
 
-        trainName = $("#train-name-input").val().trim();
-        destination = $("#destination-input").val().trim();
-        firstTime = $("#start-input").val().trim();
-        frequency = $("#frequency-input").val().trim();
+        var trainName = $("#train-name-input").val().trim();
+        var destination = $("#destination-input").val().trim();
+        var firstTime = $("#start-input").val().trim();
+        var frequency = $("#frequency-input").val().trim();
 
-        firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
+        var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
         console.log("FirstTimeConverted: " + firstTimeConverted);
 
-        currentTime = moment();
-        console.log("Current Time: " + moment(currentTime).format("HH:mm"));
+        var currentTime = moment();
+        var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+        var remainder = diffTime % frequency;
+        var minutesAway = frequency - remainder;
+        var nextTrain = moment().add(minutesAway, "minutes");
+        var nextArrival = moment(nextTrain).format("h:mm a");
 
-        diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-        console.log("Difference in Time: " + diffTime);
+        // creates a temporary object for holding train data
+        // var newTrain = {
+        //     trainName: trainName,
+        //     destination: destination,
+        //     firstTime: firstTime,
+        //     remainder: remainder,
+        //     frequency: frequency,
+        //     minutesAway: minutesAway,
+        //     nextArrival: nextArrival
+        // }
 
-        remainder = diffTime % frequency;
-        console.log("Remainder: " + remainder);
-
-        minutesAway = frequency - remainder;
-        console.log("Minutes till Train: " + minutesAway);
-
-        nextTrain = moment().add(minutesAway, "minutes");
-        console.log("nextTrain: " + nextTrain);
-
-        console.log("Arrival Time: " + moment(nextTrain).format("hh:mm"));
-
-        nextArrival = moment(nextTrain).format("h:mm a");
-
-
-        database.ref().set({
+        // uploads new train data to the database
+        database.ref().push({
             trainName: trainName,
             destination: destination,
             firstTime: firstTime,
@@ -66,21 +65,30 @@ $(document).ready(function () {
             frequency: frequency,
             minutesAway: minutesAway,
             nextArrival: nextArrival
-
-
         });
+
+        // clears all of the text boxes
         $(".form-control").val("");
+
+        // logs everything to teh console
+        console.log("Current Time: " + moment(currentTime).format("HH:mm"));
+        console.log("Difference in Time: " + diffTime);
+        console.log("Remainder: " + remainder);
+        console.log("Minutes till Train: " + minutesAway);
+        console.log("nextTrain: " + nextTrain);
+        console.log("Arrival Time: " + moment(nextTrain).format("hh:mm"));
+
     })
 
     // firebase watcher + initial loader
     // The createRow function takes data returned by firebase
-    database.ref().on("value", function (data) {
-        console.log(data.val());
+    database.ref().on("child_added", function (childSnapshot, prevChildKey) {
+        console.log(childSnapshot.val());
 
         // Get reference to exising tbody element, create new table row element
         var tBody = $("tBody");
         var tRow = $("<tr>");
-        var child = data.val();
+        var child = childSnapshot.val();
 
         // methods run on jquery selectors return the selector they were run on
         // this is why we can create and save a reference to a td in the same statement we update its text
