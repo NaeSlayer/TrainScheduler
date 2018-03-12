@@ -55,7 +55,7 @@ $(document).ready(function () {
 
         console.log("Arrival Time: " + moment(nextTrain).format("hh:mm"));
 
-        nextArrival = moment(nextTrain).format("hh:mm");
+        nextArrival = moment(nextTrain).format("h:mm a");
 
 
         database.ref().set({
