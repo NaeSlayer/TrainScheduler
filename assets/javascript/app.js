@@ -13,19 +13,6 @@ $(document).ready(function () {
 
     var database = firebase.database();
 
-    // initial values
-    // var trainName = "";
-    // var destination = "";
-    // var firstTime = "";
-    // var firstTimeConverted = "";
-    // var frequency = "";
-    // var currentTime = "";
-    // var diffTime = "";
-    // var remainder = "";
-    // var nextTrain = "";
-    // var nextArrival = "";
-    // var minutesAway = "";
-
     // capture button on click
     $("#add-train-btn").on("click", function () {
         event.preventDefault();
@@ -45,16 +32,6 @@ $(document).ready(function () {
         var nextTrain = moment().add(minutesAway, "minutes");
         var nextArrival = moment(nextTrain).format("h:mm a");
 
-        // creates a temporary object for holding train data
-        // var newTrain = {
-        //     trainName: trainName,
-        //     destination: destination,
-        //     firstTime: firstTime,
-        //     remainder: remainder,
-        //     frequency: frequency,
-        //     minutesAway: minutesAway,
-        //     nextArrival: nextArrival
-        // }
 
         // uploads new train data to the database
         database.ref().push({
@@ -79,7 +56,7 @@ $(document).ready(function () {
         console.log("Arrival Time: " + moment(nextTrain).format("hh:mm"));
 
     })
-
+    var trainCount = 0;
     // firebase watcher + initial loader
     // The createRow function takes data returned by firebase
     database.ref().on("child_added", function (childSnapshot, prevChildKey) {
@@ -101,9 +78,12 @@ $(document).ready(function () {
 
 
 
+
         // append the newly created table data to the table row
         tRow.append(trainNameTd, destinationTd, frequencyTd, nextArrivalTd, minutesAwayTd);
         // append the table row to the table body
         tBody.append(tRow);
+
     })
+
 })
