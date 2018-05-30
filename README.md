@@ -4,3 +4,5 @@ This is a train schedule application that incorporates Firebase to host arrival 
 
 To use this app, just enter Train Name, 
 Destination, First Train time (00:00-military time), and Frequency (min), then hit "Submit"!
+
+Click here to check it out: https://naeslayer.github.io/TrainScheduler/
